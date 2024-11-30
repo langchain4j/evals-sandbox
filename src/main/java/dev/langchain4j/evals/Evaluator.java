@@ -16,11 +16,11 @@ import dev.langchain4j.store.embedding.EmbeddingSearchResult;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.EmbeddingStoreIngestor;
 import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
+import org.apache.commons.io.file.Counters;
 
 import java.nio.file.FileSystems;
 import java.nio.file.PathMatcher;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static dev.langchain4j.data.document.splitter.DocumentSplitters.recursive;
@@ -29,7 +29,7 @@ import static java.util.stream.Collectors.toSet;
 
 public class Evaluator {
 
-    public static final String LC4J_DOCUMENTATION_PATH = "C:\\dev\\repo\\langchain4j_1\\docs\\docs";
+    public static final String LC4J_DOCUMENTATION_PATH = "/home/dkafetzis/Documents/langchain4j/docs/docs";
     public static final OpenAiTokenizer TOKENIZER = new OpenAiTokenizer(GPT_4_O_MINI);
     public static final int MAX_LENGTH_TOKENS = 8000; // TODO specify per model
 
@@ -37,7 +37,7 @@ public class Evaluator {
 
         for (EmbeddingModelPair embeddingModelPair : EmbeddingModelPairs.get()) {
 
-            for (int maxSegmentSizeInTokens : List.of(-1, 100, 300, 600, 1000)) {
+            for (int maxSegmentSizeInTokens : List.of(100, 300, 600, 1000)) {
 
                 DocumentSplitter documentSplitter;
                 String splitterDescription;
@@ -86,7 +86,7 @@ public class Evaluator {
                     Metadata metadata = document.metadata().copy();
                     String relativePath = metadata.getString("absolute_directory_path")
                             .replace(LC4J_DOCUMENTATION_PATH, "")
-                            + "\\" + metadata.getString("file_name");
+                            + "/" + metadata.getString("file_name");
                     metadata.put("relative_path", relativePath);
 
                     int documentTokenCount = TOKENIZER.estimateTokenCountInText(documentText);
@@ -141,7 +141,7 @@ public class Evaluator {
 
         dataset.forEach(entry -> {
             entry.expectedDocumentPaths().forEach((expectedPath, score) -> {
-                if (!relativePaths.contains(expectedPath)) {
+                if (!relativePaths.contains(expectedPath.split(":")[0])) {
                     throw new RuntimeException("Can't find path " + expectedPath);
                 }
             });
@@ -159,13 +159,32 @@ public class Evaluator {
                 .collect(toSet());
 
         AtomicReference<Double> score = new AtomicReference<>(0.0);
-
         datasetEntry.expectedDocumentPaths().forEach((expectedPath, partialScore) -> {
             if (relativePaths.contains(expectedPath)) {
                 score.set(score.get() + partialScore);
             }
         });
-
+        List<Map<CharSequence, Integer>> GroundTrouthCounters = new ArrayList<>();
+        datasetEntry.expectedDocumentPaths().forEach((expectedPath, partialScore) -> {
+            var counterMap = new HashMap<CharSequence, Integer>();
+            StringTokenizer tokens = new StringTokenizer(expectedPath);
+            while (tokens.hasMoreTokens()) {
+                String token = tokens.nextToken();
+                counterMap.put(token, counterMap.getOrDefault(token, 0) + 1);
+            }
+            GroundTrouthCounters.add(counterMap);
+        });
+        double relevantDocuments = 0;
+        for (String relativePath : relativePaths) {
+            if (datasetEntry.expectedDocumentPaths().containsKey(relativePath)) {
+                relevantDocuments+=1;
+            }
+        }
+        double precision = relevantDocuments/relativePaths.size();
+        double recall = relevantDocuments/datasetEntry.expectedDocumentPaths().size();
+        System.out.println("Precision: " + precision);
+        System.out.println("Recall: " + recall);
+        System.out.println("F1: " + (2*precision*recall)/(precision+recall));
         if (score.get() <= 1.0) {
             return score.get();
         } else {

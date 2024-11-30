@@ -2,30 +2,32 @@ package dev.langchain4j.evals;
 
 import dev.langchain4j.model.embedding.onnx.allminilml6v2.AllMiniLmL6V2EmbeddingModel;
 import dev.langchain4j.model.embedding.onnx.allminilml6v2q.AllMiniLmL6V2QuantizedEmbeddingModel;
+import dev.langchain4j.model.openai.OpenAiEmbeddingModel;
 
+import java.time.Duration;
 import java.util.List;
 
 public class EmbeddingModelPairs {
 
     static List<EmbeddingModelPair> get() {
 
-//        OpenAiEmbeddingModel openAiAda2 = OpenAiEmbeddingModel.builder()
-//                .apiKey(System.getenv("OPENAI_API_KEY"))
-//                .modelName("text-embedding-ada-002")
-//                .timeout(Duration.ofSeconds(20))
-//                .build();
-//
-//        OpenAiEmbeddingModel openAi3Large = OpenAiEmbeddingModel.builder()
-//                .apiKey(System.getenv("OPENAI_API_KEY"))
-//                .modelName("text-embedding-3-large")
-//                .timeout(Duration.ofSeconds(20))
-//                .build();
-//
-//        OpenAiEmbeddingModel openAi3Small = OpenAiEmbeddingModel.builder()
-//                .apiKey(System.getenv("OPENAI_API_KEY"))
-//                .modelName("text-embedding-3-small")
-//                .timeout(Duration.ofSeconds(20))
-//                .build();
+        OpenAiEmbeddingModel openAiAda2 = OpenAiEmbeddingModel.builder()
+                .apiKey(System.getenv("OPENAI_API_KEY"))
+                .modelName("text-embedding-ada-002")
+                .timeout(Duration.ofSeconds(20))
+                .build();
+
+        OpenAiEmbeddingModel openAi3Large = OpenAiEmbeddingModel.builder()
+                .apiKey(System.getenv("OPENAI_API_KEY"))
+                .modelName("text-embedding-3-large")
+                .timeout(Duration.ofSeconds(20))
+                .build();
+
+        OpenAiEmbeddingModel openAi3Small = OpenAiEmbeddingModel.builder()
+                .apiKey(System.getenv("OPENAI_API_KEY"))
+                .modelName("text-embedding-3-small")
+                .timeout(Duration.ofSeconds(20))
+                .build();
 
 //        VertexAiEmbeddingModel vertexAiGecko3 = VertexAiEmbeddingModel.builder()
 //                .endpoint(System.getenv("GCP_VERTEXAI_ENDPOINT"))
@@ -87,7 +89,7 @@ public class EmbeddingModelPairs {
 //                new EmbeddingModelPair(new BgeSmallEnV15EmbeddingModel(), new BgeSmallEnV15EmbeddingModel()),
 //
                 new EmbeddingModelPair(new AllMiniLmL6V2QuantizedEmbeddingModel(), new AllMiniLmL6V2QuantizedEmbeddingModel()),
-                new EmbeddingModelPair(new AllMiniLmL6V2EmbeddingModel(), new AllMiniLmL6V2EmbeddingModel())
+                new EmbeddingModelPair(new AllMiniLmL6V2EmbeddingModel(), new AllMiniLmL6V2EmbeddingModel()),
 //
 //                new EmbeddingModelPair(new E5SmallV2QuantizedEmbeddingModel(), new E5SmallV2QuantizedEmbeddingModel()),
 //                new EmbeddingModelPair(new E5SmallV2EmbeddingModel(), new E5SmallV2EmbeddingModel()),
@@ -114,9 +116,9 @@ public class EmbeddingModelPairs {
 //                                .build()
 //                ),
 //
-//                new EmbeddingModelPair(openAiAda2, openAiAda2),
-//                new EmbeddingModelPair(openAi3Large, openAi3Large),
-//                new EmbeddingModelPair(openAi3Small, openAi3Small),
+                new EmbeddingModelPair(openAiAda2, openAiAda2),
+                new EmbeddingModelPair(openAi3Large, openAi3Large),
+                new EmbeddingModelPair(openAi3Small, openAi3Small)
 
 //                new EmbeddingModelPair(vertexAiGecko3, vertexAiGecko3),
 //                new EmbeddingModelPair(vertexAiGecko3Document, vertexAiGecko3Query),
