@@ -8,7 +8,7 @@ class LogParser {
 
     public static void main(String[] args) {
 
-        File folder = new File("C:\\Users\\ljuba\\Desktop\\docu_chat_logs");
+        File folder = new File("/home/dkafetzis/Downloads/chat.langchain4j.dev_logs");
 
         try {
             List<LogEntry> logEntries = JsonFileReader.readLogEntriesFromFolder(folder);
