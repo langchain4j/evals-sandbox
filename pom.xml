@@ -32,6 +32,25 @@
             <version>${langchain4j.version}</version>
         </dependency>
 
+<!--        Added the jar to the libs folder link to source webpage is here-->
+<!--            https://www.cs.cmu.edu/~alavie/METEOR/README.html and here-->
+<!--            https://www.cs.cmu.edu/~alavie/METEOR/-->
+<!--        But it seems to be more involved than expected-->
+        <dependency>
+            <groupId>edu.cmu</groupId>
+            <artifactId>meteor</artifactId>
+            <version>1.5</version>
+        </dependency>
+
+<!--        In order for this to work clone the trustyai repo from github-->
+<!--        https://github.com/trustyai-explainability/trustyai-explainability-->
+<!--        and mvn install the explainability-core package-->
+        <dependency>
+            <groupId>org.kie.trustyai</groupId>
+            <artifactId>explainability-core</artifactId>
+            <version>999-SNAPSHOT</version>
+        </dependency>
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
