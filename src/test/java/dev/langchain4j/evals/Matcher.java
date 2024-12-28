@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface Matcher {
 
-    double match(List<String> groundTruths, List<String> allRetrieved);
+    boolean match(String groundTruth, List<String> retrieved);
 }
