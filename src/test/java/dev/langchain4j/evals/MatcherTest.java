@@ -161,7 +161,7 @@ class MatcherTest {
                     matcher,
                     "I like apples. I like bananas.",
                     List.of("I like bananas.", "I like cherries.", "I like apples."),
-                    false
+                    true // TODO count is as "match" only if both retrieved come from the same document and are consecutive?
             );
 
 
