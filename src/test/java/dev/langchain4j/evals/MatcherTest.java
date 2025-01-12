@@ -204,7 +204,13 @@ class MatcherTest {
 
     static List<Matcher> matchers() {
         return List.of(
-                // TODO please add your implementations
+//                new RougeMatcher("l"),
+//                new RougeMatcher("2"),
+//                new RougeMatcher("ls"),
+//                new RougeMatcher("1"),
+//                new TfIdfMatcher(),
+//                new TokenMatcher(),
+                new SentenceMatcher()
         );
     }
 }

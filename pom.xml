@@ -11,6 +11,8 @@
     <properties>
         <java.version>17</java.version>
         <langchain4j.version>0.35.0</langchain4j.version>
+        <opennlp.version>1.9.3</opennlp.version>
+        <opennlp.models.version>1.0.0</opennlp.models.version>
         <jackson.version>2.17.3</jackson.version>
     </properties>
 
@@ -32,7 +34,7 @@
             <version>${langchain4j.version}</version>
         </dependency>
 
-<!--        Added the jar to the libs folder link to source webpage is here-->
+<!--        Added the jar to the libs folder, link to source webpage is here-->
 <!--            https://www.cs.cmu.edu/~alavie/METEOR/README.html and here-->
 <!--            https://www.cs.cmu.edu/~alavie/METEOR/-->
 <!--        But it seems to be more involved than expected-->
@@ -49,6 +51,20 @@
             <groupId>org.kie.trustyai</groupId>
             <artifactId>explainability-core</artifactId>
             <version>999-SNAPSHOT</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.opennlp/opennlp-models-sentdetect-en -->
+        <dependency>
+            <groupId>org.apache.opennlp</groupId>
+            <artifactId>opennlp-models-sentdetect-en</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.opennlp</groupId>
+            <artifactId>opennlp-tools</artifactId>
+            <version>${opennlp.version}</version>
         </dependency>
 
         <dependency>
