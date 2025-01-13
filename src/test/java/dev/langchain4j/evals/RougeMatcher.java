@@ -1,6 +1,8 @@
 package dev.langchain4j.evals;
 
-import org.kie.trustyai.metrics.language.rouge.ROUGE;
+
+
+import dev.langchain4j.evals.customROUGE.ROUGE;
 
 import java.util.List;
 
@@ -16,8 +18,6 @@ public class RougeMatcher implements Matcher {
             case "2":
                 this.RougeScorer = new ROUGE(ROUGE.RougeTypes.ROUGE2);
                 break;
-            case "ls":
-                this.RougeScorer = new ROUGE(ROUGE.RougeTypes.ROUGE_LSUM);
             default:
                 this.RougeScorer = new ROUGE(ROUGE.RougeTypes.ROUGEL);
                 break;
@@ -33,6 +33,6 @@ public class RougeMatcher implements Matcher {
                 highesthScore = score;
             }
         }
-        return highesthScore > 0.6;
+        return highesthScore > 0.8;
     }
 }

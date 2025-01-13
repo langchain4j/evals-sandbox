@@ -38,11 +38,11 @@
 <!--            https://www.cs.cmu.edu/~alavie/METEOR/README.html and here-->
 <!--            https://www.cs.cmu.edu/~alavie/METEOR/-->
 <!--        But it seems to be more involved than expected-->
-        <dependency>
-            <groupId>edu.cmu</groupId>
-            <artifactId>meteor</artifactId>
-            <version>1.5</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>edu.cmu</groupId>-->
+<!--            <artifactId>meteor</artifactId>-->
+<!--            <version>1.5</version>-->
+<!--        </dependency>-->
 
 <!--        In order for this to work clone the trustyai repo from github-->
 <!--        https://github.com/trustyai-explainability/trustyai-explainability-->

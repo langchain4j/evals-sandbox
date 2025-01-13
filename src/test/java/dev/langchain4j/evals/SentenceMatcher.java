@@ -14,6 +14,8 @@ public class SentenceMatcher implements Matcher{
     private static SentenceDetectorME sentenceDetector;
 
     public SentenceMatcher() {
+
+        //Used the english model for testing for now but we can add a languadge detector for other languages and the logic below stays the same.
         try (InputStream modelfile = this.getClass().getResourceAsStream("/opennlp-en-ud-ewt-sentence-1.0-1.9.3.bin")){
             assert modelfile != null;
             SentenceModel model = new SentenceModel(modelfile);
@@ -26,9 +28,16 @@ public class SentenceMatcher implements Matcher{
     @Override
     public boolean match(String groundTruth, List<String> retrieved) {
         Set<String> groundTruthSentences = Set.of(sentenceDetector.sentDetect(groundTruth));
-        List<Set<String>> retrievedSentences = retrieved.stream().map(sentenceDetector::sentDetect).map(Set::of).toList();
-        for (Set<String> retrievedSentence : retrievedSentences) {
-            if (retrievedSentence.contains(groundTruthSentences)) {
+        List<Set<String>> retrievedDocumentSentences = retrieved.stream().map(sentenceDetector::sentDetect).map(Set::of).toList();
+//        for (Set<String> retrievedDocument : retrievedDocumentSentences) {
+//            if (groundTruthSentences.containsAll(retrievedDocument)){
+//                return true;
+//            }
+//        }
+
+//        or
+        for (Set<String> retrievedDocument : retrievedDocumentSentences) {
+            if (retrievedDocument.containsAll(groundTruthSentences)){
                 return true;
             }
         }
