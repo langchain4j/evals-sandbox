@@ -40,33 +40,40 @@ public class Samples {
             List.of("/tutorials/4-response-streaming.md", "/tutorials/5-ai-services.md"),
             List.of(
                 """
-                    Below is an example of how to implement streaming with `StreamingChatLanguageModel`:\\n" +
-                    "```java\\n" +
-                    "StreamingChatLanguageModel model = OpenAiStreamingChatModel.builder()\\n" +
-                    "    .apiKey(System.getenv(\\"OPENAI_API_KEY\\"))\\n" +
-                    "    .modelName(GPT_4_O_MINI)\\n" +
-                    "    .build();\\n" +
-                    "\\n" +
-                    "String userMessage = \\"Tell me a joke\\";\\n" +
-                    "\\n" +
-                    "model.generate(userMessage, new StreamingResponseHandler<AiMessage>() {\\n" +
-                    "\\n" +
-                    "    @Override\\n" +
-                    "    public void onNext(String token) {\\n" +
-                    "        System.out.println(\\"onNext: \\" + token);\\n" +
-                    "    }\\n" +
-                    "\\n" +
-                    "    @Override\\n" +
-                    "    public void onComplete(Response<AiMessage> response) {\\n" +
-                    "        System.out.println(\\"onComplete: \\" + response);\\n" +
-                    "    }\\n" +
-                    "\\n" +
-                    "    @Override\\n" +
-                    "    public void onError(Throwable error) {\\n" +
-                    "        error.printStackTrace();\\n" +
-                    "    }\\n" +
-                    "});\\n" +
-                    "```
+                By implementing `StreamingResponseHandler`, you can define actions for the following events:
+                    - When the next token is generated: `onNext(String token)` is invoked.
+                    For instance, you can send the token directly to the UI as soon as it becomes available.
+                    - When the LLM has completed generation: `onComplete(Response<T> response)` is invoked.
+                    Here, `T` stands for `AiMessage` in the case of `StreamingChatLanguageModel`,
+                    and `String` for `StreamingLanguageModel`. The `Response` object contains the complete response.
+                    - When an error occurs: `onError(Throwable error)` is invoked.
+                
+                    Below is an example of how to implement streaming with `StreamingChatLanguageModel`:
+                    ```java
+                    StreamingChatLanguageModel model = OpenAiStreamingChatModel.builder()
+                        .apiKey(System.getenv("OPENAI_API_KEY"))
+                        .modelName(GPT_4_O_MINI)
+                        .build();
+                
+                    String userMessage = "Tell me a joke";
+                
+                    model.generate(userMessage, new StreamingResponseHandler<AiMessage>() {
+                
+                        @Override
+                        public void onNext(String token) {
+                            System.out.println("onNext: " + token);
+                        }
+                
+                        @Override
+                        public void onComplete(Response<AiMessage> response) {
+                            System.out.println("onComplete: " + response);
+                        }
+                
+                        @Override
+                        public void onError(Throwable error) {
+                            error.printStackTrace();
+                        }
+                    });
                     """,
                     """
                     ```java

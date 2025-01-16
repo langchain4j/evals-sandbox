@@ -1,7 +1,9 @@
 package dev.langchain4j.evals.documentRelevance;
 
 
-import org.kie.trustyai.metrics.language.rouge.ROUGE;
+
+
+import dev.langchain4j.evals.customROUGE.ROUGE;
 
 import java.util.ArrayList;
 import java.util.List;

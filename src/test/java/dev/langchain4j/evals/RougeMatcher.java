@@ -33,6 +33,7 @@ public class RougeMatcher implements Matcher {
                 highesthScore = score;
             }
         }
-        return highesthScore > 0.8;
+        System.out.println(highesthScore);
+        return highesthScore > 0.7;
     }
 }

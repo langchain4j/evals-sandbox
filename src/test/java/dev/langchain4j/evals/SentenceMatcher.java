@@ -28,7 +28,6 @@ public class SentenceMatcher implements Matcher{
     @Override
     public boolean match(String groundTruth, List<String> retrieved) {
         Set<String> groundTruthSentences = Set.of(sentenceDetector.sentDetect(groundTruth));
-        List<Set<String>> retrievedDocumentSentences = retrieved.stream().map(sentenceDetector::sentDetect).map(Set::of).toList();
 //        for (Set<String> retrievedDocument : retrievedDocumentSentences) {
 //            if (groundTruthSentences.containsAll(retrievedDocument)){
 //                return true;
@@ -36,11 +35,16 @@ public class SentenceMatcher implements Matcher{
 //        }
 
 //        or
-        for (Set<String> retrievedDocument : retrievedDocumentSentences) {
-            if (retrievedDocument.containsAll(groundTruthSentences)){
-                return true;
+        for (String sentence : groundTruthSentences){
+            boolean match = false;
+            for (String retrievedText : retrieved){
+                if (retrievedText.contains(sentence)){
+                    match = true;
+                    break;
+                }
             }
+            if (!match) return false;
         }
-        return false;
+        return true;
     }
 }
