@@ -27,14 +27,14 @@ public class SentenceMatcher implements Matcher{
 
     @Override
     public boolean match(String groundTruth, List<String> retrieved) {
-        Set<String> groundTruthSentences = Set.of(sentenceDetector.sentDetect(groundTruth));
-//        for (Set<String> retrievedDocument : retrievedDocumentSentences) {
-//            if (groundTruthSentences.containsAll(retrievedDocument)){
-//                return true;
-//            }
-//        }
 
-//        or
+        //I think this is really promising
+        //It passes all the tests in the MatcherText class except the one where the retrieved sentences are cut mid-sentence
+        //It is very effective but strict, in order for the groundTruth string to be a match, every sentence in it must be contained in the list of retrieved strings
+        //Really this calculates recall in its current configuration since we are trying to match a ground truth string against a list of retrieved strings
+        //But precision can be calculated by flipping the arguments of the method (providing A retrieved string and trying to match it against a list of ground truths)
+
+        Set<String> groundTruthSentences = Set.of(sentenceDetector.sentDetect(groundTruth));
         for (String sentence : groundTruthSentences){
             boolean match = false;
             for (String retrievedText : retrieved){
