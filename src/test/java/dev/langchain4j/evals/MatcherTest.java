@@ -205,8 +205,9 @@ class MatcherTest {
     static List<Matcher> matchers() {
         return List.of(
 //                new RougeMatcher("l")
-//                new TfIdfMatcher(),
-                new SentenceMatcher()
+//                new TfIdfMatcher()
+//                new SentenceMatcher(),
+                new FuzzyMatcher()
         );
     }
 }
