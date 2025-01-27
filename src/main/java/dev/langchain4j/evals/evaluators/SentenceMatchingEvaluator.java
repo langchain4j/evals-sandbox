@@ -7,9 +7,7 @@ import opennlp.tools.sentdetect.SentenceModel;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SentenceMatchingEvaluator implements RetrievalEvaluator {
 
@@ -28,8 +26,8 @@ public class SentenceMatchingEvaluator implements RetrievalEvaluator {
     @Override
     public Map<String, Double> evaluate(List<TextSegment> groundTruthDocuments, List<TextSegment> retrievedDocuments) {
 
-        List<String> groundTruthSentences = new ArrayList<>();
-        List<String> retrievedSentences = new ArrayList<>();
+        Set<String> groundTruthSentences = new HashSet<>();
+        Set<String> retrievedSentences = new HashSet<>();
 
         assert sentenceDetector != null;
         for (TextSegment document : groundTruthDocuments){
