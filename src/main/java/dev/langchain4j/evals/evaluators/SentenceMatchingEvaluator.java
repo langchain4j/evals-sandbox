@@ -1,6 +1,7 @@
 package dev.langchain4j.evals.evaluators;
 
 import dev.langchain4j.data.document.Document;
+import dev.langchain4j.data.segment.TextSegment;
 import opennlp.tools.sentdetect.SentenceDetectorME;
 import opennlp.tools.sentdetect.SentenceModel;
 
@@ -25,17 +26,17 @@ public class SentenceMatchingEvaluator implements RetrievalEvaluator {
     }
 
     @Override
-    public Map<String, Double> evaluate(List<Document> groundTruthDocuments, List<Document> retrievedDocuments) {
+    public Map<String, Double> evaluate(List<TextSegment> groundTruthDocuments, List<TextSegment> retrievedDocuments) {
 
         List<String> groundTruthSentences = new ArrayList<>();
         List<String> retrievedSentences = new ArrayList<>();
 
         assert sentenceDetector != null;
-        for (Document document : groundTruthDocuments){
+        for (TextSegment document : groundTruthDocuments){
             groundTruthSentences.addAll(List.of(sentenceDetector.sentDetect(document.text())));
         }
 
-        for (Document retrievedDocument : retrievedDocuments){
+        for (TextSegment retrievedDocument : retrievedDocuments){
             retrievedSentences.addAll(List.of(sentenceDetector.sentDetect(retrievedDocument.text())));
         }
 

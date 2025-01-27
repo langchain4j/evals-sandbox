@@ -1,6 +1,7 @@
 package dev.langchain4j.evals.evaluators;
 
 import dev.langchain4j.data.document.Document;
+import dev.langchain4j.data.segment.TextSegment;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 
 import java.util.HashSet;
@@ -15,9 +16,9 @@ public class FuzzyMatchingChunkEvaluator implements RetrievalEvaluator{
     }
 
     @Override
-    public Map<String, Double> evaluate(List<Document> groundTruthDocuments, List<Document> retrievedDocuments) {
-        List<String> groundTruthChunks = groundTruthDocuments.stream().map(Document::text).toList();
-        List<String> retrievedChunks = retrievedDocuments.stream().map(Document::text).toList();
+    public Map<String, Double> evaluate(List<TextSegment> groundTruthDocuments, List<TextSegment> retrievedDocuments) {
+        List<String> groundTruthChunks = groundTruthDocuments.stream().map(TextSegment::text).toList();
+        List<String> retrievedChunks = retrievedDocuments.stream().map(TextSegment::text).toList();
 
 
         Set<String> hitGroundTruthChunks = new HashSet<>();

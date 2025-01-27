@@ -1,6 +1,7 @@
 package dev.langchain4j.evals.evaluators;
 
 import dev.langchain4j.data.document.Document;
+import dev.langchain4j.data.segment.TextSegment;
 import opennlp.tools.tokenize.Tokenizer;
 import org.kie.trustyai.metrics.language.utils.tokenizers.TokenizerUtils;
 
@@ -15,17 +16,17 @@ public class TokenMatchingEvaluator implements RetrievalEvaluator {
     }
 
     @Override
-    public Map<String, Double> evaluate(List<Document> groundTruthDocuments, List<Document> retrievedDocuments) {
+    public Map<String, Double> evaluate(List<TextSegment> groundTruthDocuments, List<TextSegment> retrievedDocuments) {
 
         Set<String> groundTruthTokens = new HashSet<>();
         Set<String> retrievedTokens = new HashSet<>();
 
         assert tokenizer != null;
-        for (Document document : groundTruthDocuments){
+        for (TextSegment document : groundTruthDocuments){
             groundTruthTokens.addAll(List.of(tokenizer.tokenize(document.text())));
         }
 
-        for (Document retrievedDocument : retrievedDocuments){
+        for (TextSegment retrievedDocument : retrievedDocuments){
             retrievedTokens.addAll(List.of(tokenizer.tokenize(retrievedDocument.text())));
         }
 
