@@ -40,8 +40,8 @@ public class TokenMatchingEvaluator implements RetrievalEvaluator {
             }
         }
 
-        double precision = 1 * (commonTokens.size() / (double) (retrievedTokens.size()));
-        double recall =  1 * (commonTokens.size() / (double) (groundTruthTokens.size()));
+        double precision = !retrievedTokens.isEmpty() ? 1 * (commonTokens.size() / (double) (retrievedTokens.size())) : 0;
+        double recall = !groundTruthTokens.isEmpty() ? 1 * (commonTokens.size() / (double) (groundTruthTokens.size())) : 0;
 
         return Map.of("Precision", precision, "Recall", recall);
     }

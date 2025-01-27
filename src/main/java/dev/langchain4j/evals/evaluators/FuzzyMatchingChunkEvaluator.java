@@ -30,15 +30,15 @@ public class FuzzyMatchingChunkEvaluator implements RetrievalEvaluator{
                 if (match(retrievedChunk, groundTruthChunk)) {
                     retrievedChunkFound = true;
                     hitGroundTruthChunks.add(retrievedChunk);
-                    continue;
-                }
-                if (retrievedChunkFound) {
-                    relevantRetrievedChunks++;
+                    break;
                 }
             }
+            if (retrievedChunkFound) {
+                relevantRetrievedChunks++;
+            }
         }
-        double precision = 1 * (relevantRetrievedChunks / (double) (retrievedChunks.size()));
-        double recall = 1 * (hitGroundTruthChunks.size() / (double) (groundTruthChunks.size()));
+        double precision = !retrievedChunks.isEmpty() ? 1 * (relevantRetrievedChunks / (double) (retrievedChunks.size())) : 0;
+        double recall = !groundTruthChunks.isEmpty() ? 1 * (hitGroundTruthChunks.size() / (double) (groundTruthChunks.size())) : 0;
 
         return Map.of("Precision", precision, "Recall", recall);
     }

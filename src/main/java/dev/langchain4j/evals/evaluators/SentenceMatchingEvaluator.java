@@ -50,8 +50,8 @@ public class SentenceMatchingEvaluator implements RetrievalEvaluator {
             }
         }
 
-        double precision = 1 * (commonSentences.size() / (double) (retrievedSentences.size()));
-        double recall =  1 * (commonSentences.size() / (double) (groundTruthSentences.size()));
+        double precision = !retrievedSentences.isEmpty() ? 1 * (commonSentences.size() / (double) (retrievedSentences.size())) : 0;
+        double recall = !groundTruthSentences.isEmpty() ?  1 * (commonSentences.size() / (double) (groundTruthSentences.size())) : 0;
 
         return Map.of("Precision", precision, "Recall", recall);
     }
