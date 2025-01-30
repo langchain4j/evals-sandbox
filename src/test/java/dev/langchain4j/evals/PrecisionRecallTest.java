@@ -4,6 +4,7 @@ import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.document.Metadata;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.evals.evaluators.FuzzyMatchingChunkEvaluator;
+import dev.langchain4j.evals.evaluators.RougeMatchingChunkEvaluator;
 import dev.langchain4j.evals.evaluators.SentenceMatchingEvaluator;
 import dev.langchain4j.evals.evaluators.TokenMatchingEvaluator;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,29 @@ import java.util.stream.Stream;
 public class PrecisionRecallTest {
 
     List<TextSegment> groundTruthContents = Stream.of(
+            new TextSegment("""
+                By implementing `StreamingResponseHandler`, you can define actions for the following events:
+                """, new Metadata()),
+            new TextSegment("""
+                A more compact way to stream the response is to use the `LambdaStreamingResponseHandler` class.
+                This utility class provides static methods to create a `StreamingResponseHandler` using lambda expressions.
+                The way to use lambdas to stream the response is quite simple.
+                ```java
+                import static dev.langchain4j.model.LambdaStreamingResponseHandler.onNext;
+
+                model.generate("Tell me a joke", onNext(System.out::print));
+                ```
+
+                The `onNextAndError()` method allows you to define actions for both the `onNext()` and `onError()` events:
+
+                ```java
+                import static dev.langchain4j.model.LambdaStreamingResponseHandler.onNextAndError;
+
+                model.generate("Tell me a joke", onNextAndError(System.out::print, Throwable::printStackTrace));
+                """, new Metadata())
+    ).toList();
+
+    List<TextSegment> referenceContents = Stream.of(
             new TextSegment("""
                 By implementing `StreamingResponseHandler`, you can define actions for the following events:
                 - When the next token is generated: `onNext(String token)` is invoked.
@@ -30,38 +54,15 @@ public class PrecisionRecallTest {
                 The way to use lambdas to stream the response is quite simple.
                 ```java
                 import static dev.langchain4j.model.LambdaStreamingResponseHandler.onNext;
-                
-                model.generate("Tell me a joke", onNext(System.out::print));
-                ```
-                
-                The `onNextAndError()` method allows you to define actions for both the `onNext()` and `onError()` events:
-                
-                ```java
-                import static dev.langchain4j.model.LambdaStreamingResponseHandler.onNextAndError;
-                
-                model.generate("Tell me a joke", onNextAndError(System.out::print, Throwable::printStackTrace));
-                """, new Metadata())
-    ).toList();
 
-    List<TextSegment> referenceContents = Stream.of(
-            new TextSegment("""
-                By implementing `StreamingResponseHandler`, you can define actions for the following events:
-                """, new Metadata()),
-            new TextSegment("""
-                A more compact way to stream the response is to use the `LambdaStreamingResponseHandler` class.
-                This utility class provides static methods to create a `StreamingResponseHandler` using lambda expressions.
-                The way to use lambdas to stream the response is quite simple.
-                ```java
-                import static dev.langchain4j.model.LambdaStreamingResponseHandler.onNext;
-                
                 model.generate("Tell me a joke", onNext(System.out::print));
                 ```
-                
+
                 The `onNextAndError()` method allows you to define actions for both the `onNext()` and `onError()` events:
-                
+
                 ```java
                 import static dev.langchain4j.model.LambdaStreamingResponseHandler.onNextAndError;
-                
+
                 model.generate("Tell me a joke", onNextAndError(System.out::print, Throwable::printStackTrace));
                 """, new Metadata()),
             new TextSegment("""
@@ -104,6 +105,16 @@ public class PrecisionRecallTest {
         Map<String,Double> results = evaluator.evaluate(groundTruthContents, referenceContents);
 
         System.out.println("Precission: " + results.get("Precision"));
+        System.out.println("Recall: " + results.get("Recall"));
+    }
+
+    @Test
+    public void RougeMatchingTest() {
+
+        RougeMatchingChunkEvaluator evaluator = new RougeMatchingChunkEvaluator();
+
+        Map<String,Double> results = evaluator.evaluate(groundTruthContents, referenceContents);
+
         System.out.println("Recall: " + results.get("Recall"));
     }
 
