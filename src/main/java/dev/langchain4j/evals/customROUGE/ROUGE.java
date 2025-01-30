@@ -1,9 +1,10 @@
 package dev.langchain4j.evals.customROUGE;
 
+import dev.langchain4j.evals.customROUGE.utils.F1Score;
+import dev.langchain4j.evals.customROUGE.utils.NGramUtils;
+import dev.langchain4j.evals.customROUGE.utils.TokenizerUtils;
 import opennlp.tools.tokenize.Tokenizer;
-import org.kie.trustyai.metrics.language.utils.F1Score;
-import org.kie.trustyai.metrics.language.utils.NGramUtils;
-import org.kie.trustyai.metrics.language.utils.tokenizers.TokenizerUtils;
+
 
 import java.util.Arrays;
 import java.util.List;
@@ -137,6 +138,9 @@ public class ROUGE {
         double rawPrecisionScore = (double) lcsLength / cols;
         double rawRecallScore = (double) lcsLength / rows;
 //        return F1Score.calculate(rawPrecisionScore, rawRecallScore);
+
+        //Return the recall score for now.
+        // Might be beneficial though the return the other scores at some point if we need it for other stuff
         return rawRecallScore;
     }
 }
