@@ -1,6 +1,5 @@
 package dev.langchain4j.evals.evaluators;
 
-import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.segment.TextSegment;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 
@@ -12,7 +11,11 @@ import java.util.Set;
 public class FuzzyMatchingChunkEvaluator implements RetrievalEvaluator{
 
     private boolean match(String string1, String string2){
-        return FuzzySearch.weightedRatio(string1, string2) > 86.5;
+
+        // scoring goes from 0 to 100 with 0 being no relation and 100 being identical
+        // we can also make this available to the user if he/she wants to make it stricter or looser
+        // when matching
+        return FuzzySearch.weightedRatio(string1, string2) > 90;
     }
 
     @Override
