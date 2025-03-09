@@ -12,6 +12,7 @@ import dev.langchain4j.evals.evaluators.SentenceMatchingEvaluator;
 import dev.langchain4j.evals.evaluators.TokenMatchingEvaluator;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.embedding.onnx.bgesmallenv15q.BgeSmallEnV15QuantizedEmbeddingModel;
+import dev.langchain4j.model.openai.OpenAiEmbeddingModel;
 import dev.langchain4j.store.embedding.EmbeddingMatch;
 import dev.langchain4j.store.embedding.EmbeddingSearchRequest;
 import dev.langchain4j.store.embedding.EmbeddingStore;
@@ -37,6 +38,9 @@ public class PrecisionRecallEvaluationDemo {
         EmbeddingModel embeddingModel = new BgeSmallEnV15QuantizedEmbeddingModel();
         List<Embedding> embeddings = embeddingModel.embedAll(segments).content();
 
+//        EmbeddingModel embeddingModel = OpenAiEmbeddingModel.builder().apiKey(System.getenv("OPENAI_API_KEY")).build();
+//        List<Embedding> embeddings = embeddingModel.embedAll(segments).content();
+
         //Add them to embedding store.
         EmbeddingStore<TextSegment> embeddingStore = new InMemoryEmbeddingStore<>();
         embeddingStore.addAll(embeddings, segments);
@@ -56,22 +60,22 @@ public class PrecisionRecallEvaluationDemo {
             var searchRequest = EmbeddingSearchRequest.builder().queryEmbedding(queryEmbedding).maxResults(10).build();
             var searchResult = embeddingStore.search(searchRequest);
 
-            var sentenceResults = sentenceMathcingEvaluator.evaluate(entry.expectedResults(), searchResult.matches().stream().map(EmbeddingMatch::embedded).toList());
+            var sentenceResults = sentenceMathcingEvaluator.evaluate(entry.expectedContextResults(), searchResult.matches().stream().map(EmbeddingMatch::embedded).toList());
             for (String key: sentenceResults.keySet()){
                 averageSentenceResults.put(key, averageSentenceResults.getOrDefault(key, 0.0) + sentenceResults.get(key));
             }
 
-            var tokenResults = tokenMatchingEvaluator.evaluate(entry.expectedResults(), searchResult.matches().stream().map(EmbeddingMatch::embedded).toList());
+            var tokenResults = tokenMatchingEvaluator.evaluate(entry.expectedContextResults(), searchResult.matches().stream().map(EmbeddingMatch::embedded).toList());
             for (String key: tokenResults.keySet()){
                 averageTokenResults.put(key, averageTokenResults.getOrDefault(key, 0.0) + tokenResults.get(key));
             }
 
-            var fuzzyResults = fuzzyMatchingEvaluator.evaluate(entry.expectedResults(), searchResult.matches().stream().map(EmbeddingMatch::embedded).toList());
+            var fuzzyResults = fuzzyMatchingEvaluator.evaluate(entry.expectedContextResults(), searchResult.matches().stream().map(EmbeddingMatch::embedded).toList());
             for (String key: fuzzyResults.keySet()){
                 averageFuzzyResults.put(key, averageFuzzyResults.getOrDefault(key, 0.0) + fuzzyResults.get(key));
             }
 
-            var rougeResults = rougeMatchingEvaluator.evaluate(entry.expectedResults(), searchResult.matches().stream().map(EmbeddingMatch::embedded).toList());
+            var rougeResults = rougeMatchingEvaluator.evaluate(entry.expectedContextResults(), searchResult.matches().stream().map(EmbeddingMatch::embedded).toList());
             for (String key: rougeResults.keySet()){
                 averageRougeResults.put(key, averageRougeResults.getOrDefault(key, 0.0) + rougeResults.get(key));
             }

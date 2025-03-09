@@ -143,4 +143,36 @@ public class ROUGE {
         // Might be beneficial though the return the other scores at some point if we need it for other stuff
         return rawRecallScore;
     }
+
+    /**
+     * Calculate ROUGE-L score given the reference and hypothesis tokens
+     *
+     * @param referenceTokens Reference tokens
+     * @param hypothesisTokens Hypothesis tokens
+     * @return ROUGE-L score
+     */
+    public Double rougeLf1(List<String> referenceTokens, List<String> hypothesisTokens) {
+        // Initialize matrix to store the number of consecutive token matches between
+        // the reference and hypothesis
+        int rows = referenceTokens.size();
+        int cols = hypothesisTokens.size();
+        int[][] lcsTable = new int[rows + 1][cols + 1];
+
+        // Iterate through each reference-hypothesis token pair and add 1 to the previous
+        // value of the diagonal if they are equal
+        for (int i = 1; i <= rows; i++) {
+            for (int j = 1; j <= cols; j++) {
+                if (referenceTokens.get(i - 1).equals(hypothesisTokens.get(j - 1))) {
+                    lcsTable[i][j] = lcsTable[i - 1][j - 1] + 1;
+                } else {
+                    lcsTable[i][j] = Math.max(lcsTable[i - 1][j], lcsTable[i][j - 1]);
+                }
+            }
+        }
+        // Get the total number of reference-hypothesis matches
+        int lcsLength = lcsTable[rows][cols];
+        double rawPrecisionScore = (double) lcsLength / cols;
+        double rawRecallScore = (double) lcsLength / rows;
+        return F1Score.calculate(rawPrecisionScore, rawRecallScore);
+    }
 }

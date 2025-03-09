@@ -1,7 +1,7 @@
 package dev.langchain4j.evals;
 
 import com.google.common.collect.Sets;
-import org.kie.trustyai.metrics.language.utils.tokenizers.TokenizerUtils;
+import dev.langchain4j.evals.customROUGE.utils.TokenizerUtils;
 
 import java.util.Arrays;
 import java.util.List;
