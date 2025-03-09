@@ -52,11 +52,11 @@
 <!--        In order for this to work clone the trustyai repo from github-->
 <!--        https://github.com/trustyai-explainability/trustyai-explainability-->
 <!--        and mvn install the explainability-core package-->
-        <dependency>
-            <groupId>org.kie.trustyai</groupId>
-            <artifactId>explainability-core</artifactId>
-            <version>999-SNAPSHOT</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.kie.trustyai</groupId>-->
+<!--            <artifactId>explainability-core</artifactId>-->
+<!--            <version>999-SNAPSHOT</version>-->
+<!--        </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/org.apache.opennlp/opennlp-models-sentdetect-en -->
         <dependency>
@@ -65,6 +65,24 @@
             <version>1.0.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.12.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.9.0</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.11.0</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.opennlp</groupId>

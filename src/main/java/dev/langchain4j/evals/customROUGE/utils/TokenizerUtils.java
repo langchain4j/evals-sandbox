@@ -7,7 +7,6 @@ import opennlp.tools.tokenize.Tokenizer;
 import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
 import opennlp.tools.tokenize.WhitespaceTokenizer;
-import org.kie.trustyai.metrics.language.utils.tokenizers.CommonsTokenizer;
 
 public class TokenizerUtils {
 
@@ -16,7 +15,7 @@ public class TokenizerUtils {
     }
 
     public static Tokenizer getDefaultTokenizer() {
-        try (InputStream modelIn = org.kie.trustyai.metrics.language.utils.tokenizers.TokenizerUtils.class.getResourceAsStream("/opennlp/models/en-token.bin")) {
+        try (InputStream modelIn = TokenizerUtils.class.getResourceAsStream("/opennlp/models/en-token.bin")) {
             if (modelIn != null) {
                 return new TokenizerME(new TokenizerModel(modelIn));
             } else {

@@ -3,13 +3,10 @@ package dev.langchain4j.evals.documentRelevance;
 import com.google.common.collect.Sets;
 import opennlp.tools.sentdetect.SentenceDetectorME;
 import opennlp.tools.sentdetect.SentenceModel;
-import opennlp.tools.tokenize.Tokenizer;
-import org.kie.trustyai.metrics.language.utils.tokenizers.TokenizerUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;

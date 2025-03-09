@@ -2,8 +2,8 @@ package dev.langchain4j.evals.documentRelevance;
 
 
 import com.google.common.collect.Sets;
+import dev.langchain4j.evals.customROUGE.utils.TokenizerUtils;
 import opennlp.tools.tokenize.Tokenizer;
-import org.kie.trustyai.metrics.language.utils.tokenizers.TokenizerUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;

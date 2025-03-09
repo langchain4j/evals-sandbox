@@ -1,9 +1,9 @@
 package dev.langchain4j.evals.evaluators;
 
-import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.segment.TextSegment;
+import dev.langchain4j.evals.customROUGE.utils.TokenizerUtils;
 import opennlp.tools.tokenize.Tokenizer;
-import org.kie.trustyai.metrics.language.utils.tokenizers.TokenizerUtils;
+
 
 import java.util.*;
 
