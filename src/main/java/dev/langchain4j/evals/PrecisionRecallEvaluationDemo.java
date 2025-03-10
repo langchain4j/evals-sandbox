@@ -21,8 +21,10 @@ import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
 import java.util.HashMap;
 import java.util.List;
 
-import static dev.langchain4j.data.document.loader.FileSystemDocumentLoader.loadDocument;
-
+// Best possible tune at least for the current dataset
+// Observed behaviour is as expected
+// Eg. If the number of returned results gets decreased recall drops because while most of them are relevant, less of the ground truth content is found.
+// Similarly, if the number of returned results is increased recall increases or stays the same since most ground truth chunks get found, but precision drops because there are more chunks of text that are not relevant
 public class PrecisionRecallEvaluationDemo {
     public static void main(String[] args) {
 
@@ -57,7 +59,7 @@ public class PrecisionRecallEvaluationDemo {
 
         for (DatasetEntry entry: Dataset.get()){
             var queryEmbedding = embeddingModel.embed(entry.query()).content();
-            var searchRequest = EmbeddingSearchRequest.builder().queryEmbedding(queryEmbedding).maxResults(10).build();
+            var searchRequest = EmbeddingSearchRequest.builder().queryEmbedding(queryEmbedding).maxResults(5).build();
             var searchResult = embeddingStore.search(searchRequest);
 
             var sentenceResults = sentenceMathcingEvaluator.evaluate(entry.expectedContextResults(), searchResult.matches().stream().map(EmbeddingMatch::embedded).toList());

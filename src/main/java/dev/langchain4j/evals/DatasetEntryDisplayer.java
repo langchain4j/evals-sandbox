@@ -6,10 +6,6 @@ import dev.langchain4j.data.document.loader.FileSystemDocumentLoader;
 import dev.langchain4j.data.document.splitter.DocumentSplitters;
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.segment.TextSegment;
-import dev.langchain4j.evals.evaluators.FuzzyMatchingChunkEvaluator;
-import dev.langchain4j.evals.evaluators.RougeMatchingChunkEvaluator;
-import dev.langchain4j.evals.evaluators.SentenceMatchingEvaluator;
-import dev.langchain4j.evals.evaluators.TokenMatchingEvaluator;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.embedding.onnx.bgesmallenv15q.BgeSmallEnV15QuantizedEmbeddingModel;
 import dev.langchain4j.store.embedding.EmbeddingMatch;
@@ -17,10 +13,11 @@ import dev.langchain4j.store.embedding.EmbeddingSearchRequest;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
 
-import java.util.HashMap;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
-public class DatasetEntryMaker {
+public class DatasetEntryDisplayer {
 
     public static void main(String[] args) {
 
@@ -40,19 +37,22 @@ public class DatasetEntryMaker {
         EmbeddingStore<TextSegment> embeddingStore = new InMemoryEmbeddingStore<>();
         embeddingStore.addAll(embeddings, segments);
 
-        for (DatasetEntry entry: Dataset.get()){
-            System.out.println("Query: " + entry.query());
-            var queryEmbedding = embeddingModel.embed(entry.query()).content();
-            var searchRequest = EmbeddingSearchRequest.builder().queryEmbedding(queryEmbedding).maxResults(5).build();
-            var searchResult = embeddingStore.search(searchRequest);
+        try (FileWriter writer = new FileWriter("output2.txt")) {
+            for (DatasetEntry entry : Dataset.get()) {
+                writer.write("Query: " + entry.query() + "\n");
+                var queryEmbedding = embeddingModel.embed(entry.query()).content();
+                var searchRequest = EmbeddingSearchRequest.builder().queryEmbedding(queryEmbedding).maxResults(5).build();
+                var searchResult = embeddingStore.search(searchRequest);
 
-            for (EmbeddingMatch match: searchResult.matches()){
-                TextSegment textSegment = (TextSegment) match.embedded();
-                System.out.println("Text: "+ textSegment.text());
-                System.out.println("Metadata: "+ textSegment.metadata());
-                System.out.println("-------------------------------------------------------");
+                for (EmbeddingMatch match : searchResult.matches()) {
+                    TextSegment textSegment = (TextSegment) match.embedded();
+                    writer.write("Text: \n" + textSegment.text() + "\n");
+                    writer.write("\nMetadata: " + textSegment.metadata() + "\n");
+                    writer.write("-------------------------------------------------------\n");
+                }
             }
-
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
