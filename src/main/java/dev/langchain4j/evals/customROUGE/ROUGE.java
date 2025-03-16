@@ -46,6 +46,24 @@ public class ROUGE {
         return calculate(reference, hypothesis, rougeType);
     }
 
+    public Double calculatePrecision(String reference, String hypothesis) {
+        final List<String> referenceTokens = Arrays.asList(this.getTokenizer().tokenize(reference));
+        final List<String> hypothesisTokens = Arrays.asList(this.getTokenizer().tokenize(hypothesis));
+        return rougeL(referenceTokens, hypothesisTokens).get("P");
+    }
+
+    public Double calculateRecall(String reference, String hypothesis) {
+        final List<String> referenceTokens = Arrays.asList(this.getTokenizer().tokenize(reference));
+        final List<String> hypothesisTokens = Arrays.asList(this.getTokenizer().tokenize(hypothesis));
+        return rougeL(referenceTokens, hypothesisTokens).get("R");
+    }
+
+    public Double calculateF1(String reference, String hypothesis) {
+        final List<String> referenceTokens = Arrays.asList(this.getTokenizer().tokenize(reference));
+        final List<String> hypothesisTokens = Arrays.asList(this.getTokenizer().tokenize(hypothesis));
+        return rougeL(referenceTokens, hypothesisTokens).get("F1");
+    }
+
     /**
      * Calculates the ROUGE score for a reference and a hypothesis.
      *
@@ -72,7 +90,7 @@ public class ROUGE {
                     final Map<String, Integer> hypothesisNGramCount = NGramUtils.countNgrams(hypothesisTokens, n);
                     return rougeN(referenceNgramCount, hypothesisNGramCount);
                 }
-                return rougeL(referenceTokens, hypothesisTokens);
+                return rougeL(referenceTokens, hypothesisTokens).get("R");
             default:
                 return 0.0;
         }
@@ -115,7 +133,7 @@ public class ROUGE {
      * @param hypothesisTokens Hypothesis tokens
      * @return ROUGE-L score
      */
-    public Double rougeL(List<String> referenceTokens, List<String> hypothesisTokens) {
+    public Map<String, Double> rougeL(List<String> referenceTokens, List<String> hypothesisTokens) {
         // Initialize matrix to store the number of consecutive token matches between
         // the reference and hypothesis
         int rows = referenceTokens.size();
@@ -137,42 +155,7 @@ public class ROUGE {
         int lcsLength = lcsTable[rows][cols];
         double rawPrecisionScore = (double) lcsLength / cols;
         double rawRecallScore = (double) lcsLength / rows;
-//        return F1Score.calculate(rawPrecisionScore, rawRecallScore);
-
-        //Return the recall score for now.
-        // Might be beneficial though the return the other scores at some point if we need it for other stuff
-        return rawRecallScore;
-    }
-
-    /**
-     * Calculate ROUGE-L score given the reference and hypothesis tokens
-     *
-     * @param referenceTokens Reference tokens
-     * @param hypothesisTokens Hypothesis tokens
-     * @return ROUGE-L score
-     */
-    public Double rougeLf1(List<String> referenceTokens, List<String> hypothesisTokens) {
-        // Initialize matrix to store the number of consecutive token matches between
-        // the reference and hypothesis
-        int rows = referenceTokens.size();
-        int cols = hypothesisTokens.size();
-        int[][] lcsTable = new int[rows + 1][cols + 1];
-
-        // Iterate through each reference-hypothesis token pair and add 1 to the previous
-        // value of the diagonal if they are equal
-        for (int i = 1; i <= rows; i++) {
-            for (int j = 1; j <= cols; j++) {
-                if (referenceTokens.get(i - 1).equals(hypothesisTokens.get(j - 1))) {
-                    lcsTable[i][j] = lcsTable[i - 1][j - 1] + 1;
-                } else {
-                    lcsTable[i][j] = Math.max(lcsTable[i - 1][j], lcsTable[i][j - 1]);
-                }
-            }
-        }
-        // Get the total number of reference-hypothesis matches
-        int lcsLength = lcsTable[rows][cols];
-        double rawPrecisionScore = (double) lcsLength / cols;
-        double rawRecallScore = (double) lcsLength / rows;
-        return F1Score.calculate(rawPrecisionScore, rawRecallScore);
+        double f1Score = F1Score.calculate(rawPrecisionScore, rawRecallScore);
+        return Map.of("P", rawPrecisionScore, "R", rawRecallScore, "F1", f1Score);
     }
 }
