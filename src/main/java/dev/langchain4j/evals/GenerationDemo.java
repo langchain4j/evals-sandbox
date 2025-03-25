@@ -5,22 +5,18 @@ import dev.langchain4j.evals.evaluators.BertGenerationEvaluator;
 import dev.langchain4j.evals.evaluators.RougeLSimilarityEvaluator;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 
-import static dev.langchain4j.model.openai.OpenAiChatModelName.GPT_4_O_MINI;
-
+//JDK_JAVA_OPTIONS=--add-modules jdk.incubator.vector --enable-preview needs to be enabled in order to use JLamma
+//In order to use the BERT evaluator
 public class GenerationDemo {
     public static void main(String[] args) {
         String apiKey = System.getenv("OPENAI_API_KEY");
 
         OpenAiChatModel model = OpenAiChatModel.builder()
                 .apiKey(apiKey)
-                .modelName(GPT_4_O_MINI)
                 .build();
-//        StringBuilder context = new StringBuilder();
-//        for (TextSegment textSegment : Dataset.get().get(0).expectedContextResults()) {
-//            context.append(textSegment.text()).append("\n");
-//        }
-//        System.out.println("Given this context:\n\n"+context+"Answer this question:\n\n"+Dataset.get().get(0).query());
-//        System.out.println(model.generate("Given this context:\n\n"+context+"\n Answer this question:\n"+Dataset.get().get(0).query()));
+
+        double averageRougeScore = 0;
+        double averageBertScore = 0;
 
         for (DatasetEntry entry : Dataset.get()) {
             StringBuilder context = new StringBuilder();
@@ -33,8 +29,15 @@ public class GenerationDemo {
             BertGenerationEvaluator be = new BertGenerationEvaluator();
             System.out.println("Ground truth: "+entry.answer());
             System.out.println("Generated answer: "+generatedAnswer);
-            System.out.println("Rouge Similarity: "+ase.evaluate(entry.answer(), generatedAnswer));
-//            System.out.println("Bert Similarity: "+be.evaluate(entry.answer(), generatedAnswer));
+            double rougeScore = ase.evaluate(entry.answer(), generatedAnswer).get("AnswerScore");
+            double bertScore = be.evaluate(entry.answer(), generatedAnswer).get("Cosine Similarity");
+            System.out.println("Rouge Similarity: " + rougeScore);
+            System.out.println("Bert Similarity: " + bertScore);
+            averageRougeScore += rougeScore;
+            averageBertScore += bertScore;
         }
+
+        System.out.println("Average Rouge Similarity: " + averageRougeScore/Dataset.get().size());
+        System.out.println("Average Bert Similarity: " + averageBertScore/Dataset.get().size());
     }
 }
