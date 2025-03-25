@@ -124,48 +124,25 @@ class Dataset {
                                 ))
                         ),
                         """
-                                    To use LangChain4j with Quarkus, follow these steps:
-
-                                1. **Add the Dependency**: Include the Quarkus LangChain4j extension in your project's build configuration (e.g., Maven or Gradle).
-
-                                   For Maven, add the following dependency in your `pom.xml`:
-                                   ```xml
-                                   <dependency>
-                                       <groupId>io.quarkiverse.langchain4j</groupId>
-                                       <artifactId>quarkus-langchain4j-core</artifactId>
-                                   </dependency>
-                                   ```
-
-                                   For Gradle, add the dependency in your `build.gradle`:
-                                   ```groovy
-                                   implementation 'io.quarkiverse.langchain4j:quarkus-langchain4j-core'
-                                   ```
-
-                                2. **Use Annotations**: Utilize the `@RegisterAiService` annotation to declare AI services in your application. This allows you to integrate AI functionality declaratively.
-
-                                3. **Inject CDI Beans**: You can inject LangChain4j models as CDI beans in your Quarkus application, making it easier to manage dependencies and lifecycle.
-
-                                4. **Configure Models**: Set up standard configuration properties for the LangChain4j models in your `application.properties` file. This is where you can define model-specific settings.
-
-                                5. **Build-Time Optimization**: Take advantage of Quarkus' build-time wiring to optimize the footprint of the LangChain4j library and enable build-time usability hints.
-
-                                6. **Run in Dev Mode**: Start your application in dev mode using the command:
-                                   ```bash
-                                   ./mvnw quarkus:dev
-                                   ```
-                                   This will allow you to leverage the Dev UI provided by the quarkus-langchain4j extension.
-
-                                7. **Explore the Dev UI**: Use the Dev UI to access various features:
-                                   - **AI Services Page**: View all detected AI services and tools.
-                                   - **Embeddings Store Access**: Add and search embeddings.
-                                   - **Tools Page**: See a list of detected tools.
-                                   - **Chat Page**: Manually interact with a chat model if available.
-                                   - **Images Page**: Test outputs of image models.
-                                   - **Moderation Page**: Test outputs of moderation models.
-
-                                8. **Refer to Documentation**: For more detailed information, check the [Quarkus LangChain4j documentation](https://docs.quarkiverse.io/quarkus-langchain4j/dev/) to explore additional features and configurations.
-
-                                By following these steps, you can effectively integrate and utilize LangChain4j within your Quarkus application."""
+                                To use LangChain4j with Quarkus, you can follow these steps:
+                                
+                                1. Add the Quarkus LangChain4j extension to your Quarkus project by including the necessary dependency in your `pom.xml` file:
+                                
+                                ```xml
+                                <dependency>
+                                    <groupId>io.quarkiverse.langchain4j</groupId>
+                                    <artifactId>quarkus-langchain4j-core</artifactId>
+                                    <version>1.0.0</version>
+                                </dependency>
+                                ```
+                                
+                                2. Follow the documentation provided by Quarkiverse for integrating LangChain4j with Quarkus. You can find detailed information and examples in the [documentation](https://docs.quarkiverse.io/quarkus-langchain4j/dev/index.html).
+                                
+                                3. Utilize the features provided by the Quarkus LangChain4j extension, such as the `@RegisterAiService` annotation for declarative AI services, injectable CDI beans for LangChain4j models, GraalVM native binary compilation, standard configuration properties for models, observability features, and build-time wiring.
+                                
+                                4. If you need to enable logging for LangChain4j requests and responses, you can configure logging in the `application.properties` file of your Quarkus project. Ensure that you have the necessary SLF4J logging backend dependencies included in your project, such as Logback.
+                                
+                                By following these steps, you can effectively use LangChain4j with Quarkus and leverage the integration features provided by the Quarkus LangChain4j extension."""
                 ),
                 new DatasetEntry(
                         "What LLMs does langchain4j support?",
@@ -275,7 +252,7 @@ class Dataset {
                                 ))
                                 )
                         ),
-                        "yes"
+                        "LangChain4j supports integration with over 15 LLM providers and over 20 embedding (vector) stores."
                 ),
                 new DatasetEntry("How can I implement the anthropic tokenizer?",
                         List.of(
@@ -531,7 +508,33 @@ class Dataset {
                                         )))
 
                         ),
-                        "To handle a super big text of 200,000 tokens or more when working with a large language model (LLM), you can adopt a multi-call approach and utilize response streaming. Here’s how you can manage this:\\n\\n1. **Break Down the Text**: Divide the super big text into smaller manageable chunks that fit within the token limit of the LLM. This allows you to process the text without hitting the size limit.\\n\\n2. **Use Streaming Response**: Instead of waiting for the entire response, you can implement response streaming. This allows the LLM to generate text one token at a time. By using the `StreamingResponseHandler`, you can handle the tokens as they are generated, which enhances the user experience as they can start receiving information almost immediately.\\n\\n3. **Implementing Streaming**: You can set up a `StreamingResponseHandler` which will manage the incoming tokens. Each time a token is generated, the `onNext` method will be called, and you can process that token accordingly. Here's an example setup:\\n\\n   ```java\\n   QianfanStreamingChatModel qianfanStreamingChatModel = QianfanStreamingChatModel.builder()\\n       .apiKey(\\\"apiKey\\\")\\n       .secretKey(\\\"secretKey\\\")\\n       .modelName(\\\"Yi-34B-Chat\\\")\\n       .build();\\n\\n   // For each chunk of text\\n   qianfanStreamingChatModel.generate(chunk, new StreamingResponseHandler<AiMessage>() {\\n       @Override\\n       public void onNext(String token) {\\n           // Process the token (e.g., append to a result string)\\n       }\\n\\n       @Override\\n       public void onComplete(Response<AiMessage> response) {\\n           // Handle completion of the response\\n       }\\n\\n       @Override\\n       public void onError(Throwable error) {\\n           // Handle any errors\\n       }\\n   });\\n   ```\\n\\n4. **Chaining Logic**: If your application requires complex logic, ensure to break it down into smaller parts. This is crucial to avoid overloading the LLM with too many instructions at once, which may lead to inefficiencies or errors.\\n\\nBy following these steps, you can effectively manage large texts with an LLM while minimizing the risk of errors due to token size limits."),
+                        """
+                                To handle a multicall logic with a low-level LLM API for managing big texts, you can use the `StreamingLanguageModel` interface and provide an implementation of the `StreamingResponseHandler` interface. This will allow you to receive the response token-by-token instead of waiting for the entire text to be generated, improving the user experience.
+                                
+                                Here is an example of how you can handle streaming responses with a low-level LLM API:
+                                
+                                ```java
+                                StreamingLanguageModel llm = // Initialize your LLM here
+                                
+                                llm.generate(text, new StreamingResponseHandler<AiResponse>() {
+                                    @Override
+                                    public void onNext(String token) {
+                                        // Handle each token of the response here
+                                    }
+                                
+                                    @Override
+                                    public void onComplete(Response<AiResponse> response) {
+                                        // Handle the complete response here
+                                    }
+                                
+                                    @Override
+                                    public void onError(Throwable throwable) {
+                                        // Handle any errors that occur during generation
+                                    }
+                                });
+                                ```
+                                
+                                By using the `StreamingResponseHandler` interface, you can efficiently manage and process large texts without encountering errors due to text size limitations. This approach allows you to stream the response token-by-token, ensuring a smooth and responsive user experience."""),
                 new DatasetEntry(
                         "give me a exemple of web socket api that stream the model output?",
                         List.of(
@@ -698,7 +701,41 @@ class Dataset {
                                                 "file_name", "quarkus.md"
                                         )))
                         ),
-                        "yes"
+                        """
+                                One example of a WebSocket API that streams the model output is the `StreamingChatLanguageModel` provided by MistralAi. This API allows you to send a user message and receive a streaming response token-by-token. Here is an example of how you can use it:
+                                
+                                ```java
+                                StreamingChatLanguageModel streamingModel = MistralAiStreamingChatModel.builder()
+                                                .apiKey(System.getenv("MISTRAL_AI_API_KEY")) // Please use your own Mistral AI API key
+                                                .responseFormat(MistralAiResponseFormatType.JSON_OBJECT)
+                                                .build();
+                                
+                                String userMessage = "What is the best French cheese?";
+                                
+                                CompletableFuture<Response<AiMessage>> futureResponse = new CompletableFuture<>();
+                                
+                                streamingModel.generate(userMessage, new StreamingResponseHandler() {
+                                    @Override
+                                    public void onNext(String token) {
+                                        System.out.print(token);
+                                    }
+                                
+                                    @Override
+                                    public void onComplete(Response<AiMessage> response) {
+                                        futureResponse.complete(response);
+                                    }
+                                
+                                    @Override
+                                    public void onError(Throwable error) {
+                                        futureResponse.completeExceptionally(error);
+                                    }
+                                });
+                                
+                                futureResponse.join();
+                                ```
+                                
+                                In this example, the `StreamingChatLanguageModel` is used to stream the response token-by-token for the given user message. The `StreamingResponseHandler` interface is implemented to handle the streaming response, and a `CompletableFuture` is used to wait for the response to complete.
+                                """
                 ),
                 new DatasetEntry(
                         "give me a example of a web socket api that stream the model output using Ktor framework",
@@ -816,7 +853,20 @@ class Dataset {
                                                 "file_name", "quarkus.md"
                                         )))
                         ),
-                        "yes"
+                        """
+                                ```java
+                                StreamingChatLanguageModel streamingModel = KtorStreamingChatModel.builder()
+                                                .apiKey(System.getenv("KTOR_API_KEY")) // Please use your own Ktor API key
+                                                .responseFormat(KtorResponseFormatType.JSON)
+                                                .build();
+                                
+                                TokenStream response = streamingModel.chat("Hello, world!");
+                                
+                                response.onEachToken(token -> {
+                                    System.out.println(token);
+                                });
+                                ```
+                                This example shows a web socket API using the Ktor framework to stream the model output in JSON format."""
                 ),
                 new DatasetEntry(
                         "What is langchain4j",
@@ -912,10 +962,10 @@ class Dataset {
                                                 "file_name", "quarkus.md"
                                         )))
                         ),
-                        "yes"
+                        "LangChain4j is a Java library that aims to simplify integrating Language Model Models (LLMs) into Java applications. It features a modular design with different modules such as `langchain4j-core` for core abstractions, the main `langchain4j` module for useful tools, and various `langchain4j-{integration}` modules for integration with different LLM providers and embedding stores. The project started in early 2023 and is a fusion of ideas from various sources like LangChain, Haystack, LlamaIndex, and the broader community. The library is actively developed, with both low-level and high-level abstractions for interacting with LLMs. Additionally, LangChain4j includes integration with Quarkus and Spring Boot for easier integration."
                 ),
                 new DatasetEntry(
-                        "Does it support ollama?",
+                        "Does langchain4j support Ollama ai tool? and how to use it",
                         List.of(
                                 new TextSegment("""
                                    ---
@@ -1045,7 +1095,49 @@ class Dataset {
                                                 "file_name", "quarkus.md"
                                         )))
                         ),
-                        "yes"
+                        """
+                                Based on the provided context, LangChain4j does not explicitly mention support for the Ollama AI tool. The context discusses the integrations of LangChain4j with various LLM providers and embedding stores, and it provides specific instructions for integrating with OpenAI and Jlama, among others. However, there is no mention of Ollama AI tool support.
+                                
+                                If you want to use LangChain4j with a tool like Jlama, you can follow these steps:
+                                
+                                ### For Maven Project (`pom.xml`):
+                                1. Add the LangChain4j dependency:
+                                   ```xml
+                                   <dependency>
+                                       <groupId>dev.langchain4j</groupId>
+                                       <artifactId>langchain4j</artifactId>
+                                       <version>0.35.0</version>
+                                   </dependency>
+                                   ```
+                                
+                                2. Add the Jlama integration dependency:
+                                   ```xml
+                                   <dependency>
+                                       <groupId>dev.langchain4j</groupId>
+                                       <artifactId>langchain4j-jlama</artifactId>
+                                       <version>0.35.0</version>
+                                   </dependency>
+                                   ```
+                                
+                                3. Optionally, for faster inference, add the Jlama native dependency:
+                                   ```xml
+                                   <dependency>
+                                       <groupId>com.github.tjake</groupId>
+                                       <artifactId>jlama-native</artifactId>
+                                       <!-- for faster inference. supports linux-x86_64, macos-x86_64/aarch_64, windows-x86_64 -->
+                                       <classifier>${os.detected.name}-${os.detected.arch}</classifier>
+                                       <version>${jlama.version}</version> <!-- Version from langchain4j-jlama pom -->
+                                   </dependency>
+                                   ```
+                                
+                                ### For Gradle Project (`build.gradle`):
+                                To integrate Jlama or other similar services, you would follow a similar approach by adding the necessary dependencies as shown for Maven but in the Gradle syntax.
+                                
+                                ### Configuration:
+                                - Configure the model parameters in the `application.properties` file if needed, similar to how it is done for OpenAI in the provided context.
+                                
+                                If LangChain4j adds support for Ollama AI in the future, it would likely follow a similar integration pattern, where you add specific dependencies and configure them as needed. For the most current information, you would need to check the official LangChain4j documentation or its integration pages.
+                                """
                 ),
                 new DatasetEntry(
                         "what maven dependency do I need for ollama?",
@@ -1232,7 +1324,16 @@ class Dataset {
                                                 "file_name", "quarkus.md"
                                         )))
                         ),
-                        "yes"
+                        """
+                                To use the ollama dependency, you need to add the following Maven dependency to your project:
+                                
+                                ```xml
+                                <dependency>
+                                    <groupId>dev.langchain4j</groupId>
+                                    <artifactId>langchain4j-ollama</artifactId>
+                                    <version>0.35.0</version>
+                                </dependency>
+                                ```"""
                 ),
                 new DatasetEntry(
                         "I wanna log request sent to model using Langchain4j. how can I do that?",
@@ -1400,7 +1501,30 @@ class Dataset {
                                                 "file_name", "quarkus.md"
                                         )))
                         ),
-                        "yes"
+                        """
+                                To log requests sent to the model using Langchain4j, you can enable logging of each request and response by setting `.logRequests(true)` and `.logResponses(true)` when creating an instance of the model. Here is an example in pure Java:
+                                
+                                ```java
+                                OpenAiChatModel.builder()
+                                    ...
+                                    .logRequests(true)
+                                    .logResponses(true)
+                                    .build();
+                                ```
+                                
+                                Make sure you have one of the SLF4J logging backends in your dependencies, such as Logback:
+                                
+                                ```xml
+                                <dependency>
+                                    <groupId>ch.qos.logback</groupId>
+                                    <artifactId>logback-classic</artifactId>
+                                    <version>1.5.8</version>
+                                </dependency>
+                                ```
+                                
+                                Alternatively, if you are using Quarkus or Spring Boot, you can configure the logging in the respective configuration files (`application.properties`). For Quarkus, you would set the `log-requests` and `log-responses` properties for the model you are using. For Spring Boot, you can configure the logging properties for the specific model in the `application.properties` file under `langchain4j.open-ai.chat-model`.
+                                
+                                By following these steps, you can log the requests sent to the model using Langchain4j."""
                 ),
                 new DatasetEntry(
                         "what log level I have to set?",
@@ -1559,7 +1683,18 @@ class Dataset {
                                                 "file_name", "quarkus.md"
                                         )))
                         ),
-                        "yes"
+                        """
+                                Based on the given context, you should set the log level to `DEBUG` for the LangChain4j OpenAI chat model.\s
+                                
+                                In Quarkus, you can set the log level for LangChain4j OpenAI chat model using the following properties in the `application.properties` file:
+                                ```properties
+                                langchain4j.open-ai.chat-model.log-requests = true
+                                langchain4j.open-ai.chat-model.log-responses = true
+                                logging.level.dev.langchain4j = DEBUG
+                                logging.level.dev.ai4j.openai4j = DEBUG
+                                ```
+                                
+                                This configuration will enable logging of requests and responses for the OpenAI chat model at the `DEBUG` level."""
                 )
         );
     }
