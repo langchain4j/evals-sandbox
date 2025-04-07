@@ -10,11 +10,7 @@ class Dataset {
 
     static List<DatasetEntry> get() {
         return List.of(
-                //Changed the dataset entries to better match what comes from the embeddings store.
-                //The current entries are using whole document texts for the context
-                //A better approach would probably be to run some queries to the store to get text segments
-                //and make dataset entries out of those to simulate more real world like data for an application dataset.
-                //For the generation step we should also add an expected answer to each dataset entry.
+                //The Metadata part of the dataset is not used for anything yet
                 new DatasetEntry(
                         "How to use LangChain4j with Quarkus?",
                         List.of(
