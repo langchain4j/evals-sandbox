@@ -12,7 +12,6 @@ import dev.langchain4j.evals.evaluators.SentenceMatchingEvaluator;
 import dev.langchain4j.evals.evaluators.TokenMatchingEvaluator;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.embedding.onnx.bgesmallenv15q.BgeSmallEnV15QuantizedEmbeddingModel;
-import dev.langchain4j.model.openai.OpenAiEmbeddingModel;
 import dev.langchain4j.store.embedding.EmbeddingMatch;
 import dev.langchain4j.store.embedding.EmbeddingSearchRequest;
 import dev.langchain4j.store.embedding.EmbeddingStore;
@@ -30,10 +29,10 @@ public class PrecisionRecallEvaluationDemo {
 
         //Load all documents from lc4j documentation.
         //
-        List<Document> l4jDocuments = FileSystemDocumentLoader.loadDocumentsRecursively("../langchain4j/docs/docs");
+        List<Document> l4jDocuments = FileSystemDocumentLoader.loadDocumentsRecursively("./langchain4j-docs");
 
         //Split the documents.
-        DocumentSplitter splitter = DocumentSplitters.recursive(1000, 0);
+        DocumentSplitter splitter = DocumentSplitters.recursive(4000, 0);
         List<TextSegment> segments = splitter.splitAll(l4jDocuments);
 
         //Calculate embeddings for them.
@@ -59,7 +58,7 @@ public class PrecisionRecallEvaluationDemo {
 
         for (DatasetEntry entry: Dataset.get()){
             var queryEmbedding = embeddingModel.embed(entry.query()).content();
-            var searchRequest = EmbeddingSearchRequest.builder().queryEmbedding(queryEmbedding).maxResults(5).build();
+            var searchRequest = EmbeddingSearchRequest.builder().queryEmbedding(queryEmbedding).maxResults(7).build();
             var searchResult = embeddingStore.search(searchRequest);
 
             var sentenceResults = sentenceMathcingEvaluator.evaluate(entry.expectedContextResults(), searchResult.matches().stream().map(EmbeddingMatch::embedded).toList());
